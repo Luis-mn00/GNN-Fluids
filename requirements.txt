@@ -1,0 +1,12 @@
+imageio
+lightning
+matplotlib
+numpy
+open3d
+opencv_python
+pandas
+plotly
+scikit_learn
+torch
+torch_geometric
+torch_scatter

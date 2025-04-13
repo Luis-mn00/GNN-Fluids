@@ -1,0 +1,11 @@
+wandb
+images
+errors.txt
+outfile.txt
+outputs_init/*
+outputs_rollout/*
+data_init/*
+data_rollout/*
+lightning_logs/*
+__pycache__/
+*.pyc

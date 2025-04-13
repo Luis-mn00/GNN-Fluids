@@ -1,0 +1,10 @@
+# run.sub -- simple run job
+
+executable              = run.sh
+log                     = run.log
+output                  = outfile.txt
+error                   = errors.txt
+
++Architecture="GPU3090"
+
+queue 1
