@@ -1,36 +1,38 @@
+"""
+Functions used in inference to compute errors and perform the rollout
+"""
 import os
 import time
 import torch
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import animation
-# from amb.metrics import rrmse_inf
-from torch_geometric.loader import DataLoader
 from src.utils.utils import print_error, generate_folder
-from src.utils.plots import plot_2D_image, plot_2D, plot_image3D, plotError, plot_3D, video_plot_3D, plot_3D_mp
+from src.utils.plots import plot_2D_image, plot_2D, plotError, plot_3D, video_plot_3D
 from src.utils.utils import compute_connectivity
-from src.dataLoader.dataset import GraphDataset
 
 from src.gnn_init import NodalGNN
 
+# Normalize the input data using mean and standard deviation
 def do_normalization(data, mean_x, std_x):
     data = (data - mean_x) / std_x
     return data
 
+# Undo normalization to return data to its original scale
 def undo_normalization(pred, mean_y, std_y):
     return (pred * std_y) + mean_y
 
+# Compute the error between predicted and ground truth values
 def compute_error(z_net, z_gt, state_variables):
-    # Compute error
+    # Compute the difference between predictions and ground truth
     e = z_net.numpy() - z_gt.numpy()
     gt = z_gt.numpy()
 
+    # Initialize dictionaries to store errors and L2 norms
     error = {clave: [] for clave in state_variables}
     L2_list = {clave: [] for clave in state_variables}
 
     epsilon = 1e-8  # Small value to avoid division by zero
 
+    # Loop through each state variable to compute errors
     for i, sv in enumerate(state_variables):
         denominator = (gt[1:, :, i] ** 2).sum(1) + epsilon
         L2 = ((e[1:, :, i] ** 2).sum(1) / denominator) ** 0.5
@@ -40,16 +42,18 @@ def compute_error(z_net, z_gt, state_variables):
 
     return error, L2_list
 
-
+# Perform a rollout to predict the evolution of the system over time
 def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtset_type, glass_flag=False):
+    # Load data from the dataloader
     data = [sample for sample in dataloader]
     print(len(data))
-    cnt_conet = 0
-    cnt_gnn = 0
+    cnt_conet = 0  # Counter for connectivity computation time
+    cnt_gnn = 0  # Counter for GNN computation time
 
     # Cut the simulation to ignore the last 20 steps
     data = data[:-20]
 
+    # Initialize dimensions and tensors for predictions and ground truth
     dim_z = data[0].x.shape[1]
     N_nodes = data[0].x.shape[0]
     if glass_flag:
@@ -62,6 +66,7 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
     # Initialize z_net_init to store the initial condition computed differently
     z_net_init = torch.zeros(len(data) + 1, N_nodes, dim_z)
 
+    # Set initial conditions for predictions and ground truth
     if glass_flag:
         z_net[0] = data[0].x[n[0] == 1]
         z_gt[0] = data[0].x[n[0] == 1]
@@ -82,17 +87,20 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
     mean_vel = torch.tensor([0.0197])
     std_vel = torch.tensor([0.2772])
     
-    #concatenate mean_x and std_x with mean_vel and std_vel
+    # Concatenate mean_x and std_x with mean_vel and std_vel
     mean_input = torch.cat((mean_x, mean_vel))
     std_input = torch.cat((std_x, std_vel))
         
     with torch.no_grad():
+        # Prepare the input for the initial condition model
         first_3_components = data[0].x[:, :3]
         model_input = torch.cat((first_3_components, data[0].vel[:, 0].unsqueeze(1)), dim=1)
         model_input = do_normalization(model_input, mean_input, std_input)
 
+        # Predict the last 4 components using the start GNN model
         last_4_components = start_gnn_model.pass_through_net(model_input.to(device), data[0].edge_index)
         
+        # Undo normalization and combine with the first 3 components
         last_4_components = undo_normalization(last_4_components, mean_y, std_y)
         z_net_init[0] = torch.cat((first_3_components, last_4_components), dim=1)
 
@@ -100,6 +108,7 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
     edge_index = data[0].edge_index
 
     try:
+        # Perform the rollout for each time step
         for t, snap in enumerate(data):
             snap.x = z_denorm
             snap.edge_index = edge_index
@@ -143,10 +152,11 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
             else:
                 z_net_init[t + 1] = z_denorm_init
     except:
-        print(f'Ha fallado el rollout en el momento: {t}')
+        print(f'Rollout failed at time: {t}')
 
-    print(f'El tiempo tardado en el compute connectivity: {cnt_conet}')
-    print(f'El tiempo tardado en la red: {cnt_gnn}')
+    # Print timing information
+    print(f'Timne spent in compute connectivity: {cnt_conet}')
+    print(f'Time spent in the NN: {cnt_gnn}')
     return z_net, z_gt, z_net_init, t+1
 
 
@@ -160,7 +170,7 @@ def generate_results(plasticity_gnn, start_gnn, test_dataloader, dInfo, device, 
     start_time = time.time()
     z_net, z_gt, z_net_init, t = roll_out(plasticity_gnn, start_gnn, test_dataloader, device, dInfo['dataset']['radius_connectivity'],
                               dInfo['dataset']['type'])
-    print(f'El tiempo tardado en el rollout: {time.time() - start_time}')
+    print(f'Time spent in the rollout: {time.time() - start_time}')
     filePath = os.path.join(output_dir_exp, 'metrics.txt')
     with open(filePath, 'w') as f:
         error, L2_list = compute_error(z_net[1:, :, :], z_gt[1:, :, :], dInfo['dataset']['state_variables'])

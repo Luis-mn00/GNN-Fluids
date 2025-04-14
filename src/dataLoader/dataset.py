@@ -1,18 +1,16 @@
+"""
+custom PyTorch Dataset class for loading and managing graph data
+"""
 import torch
 from torch.utils.data import Dataset
 from sklearn.preprocessing import MinMaxScaler
 
-
+# Dataset class for loading graph data.
+# Args:
+# dInfo (dict):              Information about the dataset.
+# dset_dir (str):            Directory where the dataset is located.
+# length (int, optional):    Length of the dataset to load. Defaults to 0.
 class GraphDataset(Dataset):
-    """
-    Dataset class for loading graph data.
-
-    Args:
-        dInfo (dict): Information about the dataset.
-        dset_dir (str): Directory where the dataset is located.
-        length (int, optional): Length of the dataset to load. Defaults to 0.
-    """
-
     def __init__(self, dInfo, dset_dir, length=0):
         self.dset_dir = dset_dir
         self.z_dim = len(dInfo['dataset']['state_variables'])
@@ -31,21 +29,17 @@ class GraphDataset(Dataset):
         if length != 0:
             self.data = self.data[:length]
 
+    # Get data with index
     def __getitem__(self, index):
-        # Load data
         data = self.data[index]
         return data
 
+    # Get the length of the dataset
     def __len__(self):
         return len(self.data)
 
+    # Compute statistics of the dataset
     def get_stats(self):
-        """
-        Compute statistics of the dataset.
-
-        Returns:
-            MinMaxScaler: Scaler object fitted to the dataset.
-        """
         total_tensor = torch.cat([data.x for data in self.data], dim=0)
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaler.fit(total_tensor)

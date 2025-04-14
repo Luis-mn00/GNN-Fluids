@@ -1,24 +1,31 @@
+"""
+Inference code to prediuct the initial condition
+"""
 import torch
 import matplotlib.pyplot as plt
 import os
-from torch_geometric.data import Data, DataLoader
-from torch.utils.data import random_split
+from torch_geometric.data import DataLoader
 import json
 
 from src.gnn_init import NodalGNN
 from src.utils.utils import *
 
+# Import necessary libraries for inference and data handling
+# This script performs inference to predict the initial conditions of a system
+
+# Set environment variable to avoid library conflicts
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
+# Load hyperparameters from a JSON file
 json_file_path = 'data_init/jsonFiles/dataset_Water3D.json'
 with open(json_file_path, 'r') as f:
     hyperparams = json.load(f)
 
-# Extract dataset and model parameters
+# Extract dataset and model parameters from the JSON file
 dataset_params = hyperparams['dataset']
 model_params = hyperparams['model']
 
-# Use model parameters
+# Extract key model parameters for initialization
 n_hidden = model_params['n_hidden']
 dim_hidden = model_params['dim_hidden']
 passes = model_params['passes']
@@ -30,16 +37,16 @@ miles = model_params['miles']
 gamma = model_params['gamma']
 weight_decay = model_params['weight_decay']
 
-# Load datasets
-file_path = "data_init/dataset/Glass_train.pt"  
+# Load training, validation, and test datasets
+file_path = "data_init/dataset/Glass_train.pt"  # Path to training dataset
 dataset_train = load_pt_dataset(file_path)
 print(f"Dataset size: {len(dataset_train)}")
 
-file_path = "data_init/dataset/Glass_val.pt"  
+file_path = "data_init/dataset/Glass_val.pt"  # Path to validation dataset
 dataset_val = load_pt_dataset(file_path)
 print(f"Validation dataset size: {len(dataset_val)}")
 
-file_path = "data_init/dataset/Glass_test.pt"  
+file_path = "data_init/dataset/Glass_test.pt"  # Path to test dataset
 dataset_test = load_pt_dataset(file_path)
 print(f"Test dataset size: {len(dataset_test)}")
 
@@ -62,12 +69,11 @@ test_loader = DataLoader(graphs_test, batch_size=model_params["batch_size"], shu
 # Load model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
 # Update model initialization
 model = NodalGNN(n_hidden=n_hidden, dim_hidden=dim_hidden, num_passes=passes, input_dim=4).to(device)
 model.load_state_dict(torch.load('data_init/weights/best_9247.pth', map_location=device))
 
-# Crear carpeta para guardar imágenes
+# Create folder to save the plots
 output_folder = "outputs_init/plots"
 os.makedirs(output_folder, exist_ok=True)
 

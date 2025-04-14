@@ -1,3 +1,6 @@
+"""
+Code for inference in the rollout with the trained TIGNN
+"""
 import os
 import json
 import argparse

@@ -1,9 +1,11 @@
+"""
+Code to train the TIGNN for rollout
+"""
 import os
 import json
 import argparse
 import datetime
 import torch
-import matplotlib.pyplot as plt
 
 import lightning.pytorch as pl
 from torch_geometric.loader import DataLoader
