@@ -47,10 +47,8 @@ GNN_rollout/
 │   ├── jsonFiles/
 │   └── weights/
 ├── images/
-├── lightning_logs/
 ├── outputs_init/
 ├── outputs_rollout/
-└── wandb/
 ```
 
 
