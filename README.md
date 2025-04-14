@@ -1,20 +1,19 @@
-
 <div align="center"> 
 
 # MSc Thesis: Physics Informed Artificial Intelligence for Free Surface Fluid Models
 
-Luis Medrano Navarro, Master in Industrial Mathematics, UC3M
+*Luis Medrano Navarro, Master in Industrial Mathematics, UC3M*
 
-</div>
+This work has been inspired by:
 
-This work has been inspired by 
-
-Graph neural networks informed locally by thermodynamics
+## Graph neural networks informed locally by thermodynamics
 
 *Alicia Tierz, Iciar Alfaro, David González, Francisco Chinesta, and Elías Cueto*
 
 [![Project page](https://img.shields.io/badge/-Project%20page-blue)](https://amb.unizar.es/people/alicia-tierz/)
 [![Paper](https://img.shields.io/badge/Paper-PDF-red)](https://arxiv.org/pdf/2405.13093)
+
+</div>
 
 ## Abstract
 Thermodynamics-informed neural networks employ inductive biases for the enforcement of the first and second principles of thermodynamics. To construct these biases, a metriplectic evolution of the system is assumed. This provides excellent results, when compared to uninformed, black box networks. While the degree of accuracy can be increased in one or two orders of magnitude, in the case of graph networks, this requires assembling global Poisson and dissipation matrices, which breaks the local structure of such networks. In order to avoid this drawback, a local version of the metriplectic biases has been developed in this work, which avoids the aforementioned matrix assembly, thus preserving the node-by-node structure of the graph networks. We apply this framework for examples in the fields of solid and fluid mechanics.  Our approach demonstrates significant computational efficiency and strong generalization capabilities, accurately making inferences on examples significantly different from those encountered during training.
