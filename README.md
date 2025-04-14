@@ -2,7 +2,7 @@
 
 # MSc Thesis: Physics Informed Artificial Intelligence for Free Surface Fluid Models
 
-*Luis Medrano Navarro, Master in Industrial Mathematics, UC3M*
+*Luis Medrano Navarro, Master in Industrial Mathematics, I3A and UC3M*
 
 This work has been inspired by:
 
@@ -16,16 +16,7 @@ This work has been inspired by:
 </div>
 
 ## Abstract
-Thermodynamics-informed neural networks employ inductive biases for the enforcement of the first and second principles of thermodynamics. To construct these biases, a metriplectic evolution of the system is assumed. This provides excellent results, when compared to uninformed, black box networks. While the degree of accuracy can be increased in one or two orders of magnitude, in the case of graph networks, this requires assembling global Poisson and dissipation matrices, which breaks the local structure of such networks. In order to avoid this drawback, a local version of the metriplectic biases has been developed in this work, which avoids the aforementioned matrix assembly, thus preserving the node-by-node structure of the graph networks. We apply this framework for examples in the fields of solid and fluid mechanics.  Our approach demonstrates significant computational efficiency and strong generalization capabilities, accurately making inferences on examples significantly different from those encountered during training.
-
-For more information, please refer to the following:
-
-- Tierz, Alicia and Alfaro, Iciar and González, David and Chinesta, Francisco and Cueto, Elías. "[Graph neural networks informed locally by thermodynamics](https://ieeexplore.ieee.org/document)." IEEE Transactions on Artificial Intelligence (2024).
-
-
-<div align="center">
-<img src="/data/resources/result_pdc.gif" width="450"><img src="/outputs/result_pdc.gif" width="350">
-</div>
+This repository contains part of the code used in my MSc thesis at I3A about GNNs for free surface fluid simulations. The goal was to develop a digital twin of sloshing scenarios, where we want to simulate the movement of a fluid inside a container. To have real-time predictions we can not rely on classical numerical solvers, but we use a Deep Learning surrogate model. In particular, we trained a Thermodynamics Informed Graph Neural Network (TIGNN).
 
 
 ## Methodology
@@ -36,55 +27,30 @@ For more information, please refer to the following:
 - **Encode-Process-Decode Architecture**: Implements a multi-layer perceptron-based pipeline for processing nodal and edge features.
 
 ### Supported Scenarios:
-- Solid Mechanics: Simulates viscoelastic beam bending in both 2D and 3D.
-- Fluid Mechanics: Models fluid sloshing with dynamic particle-based connectivity.
-
-
-## Results
-
-- Example rollout for the 3D viscoelastic beam bending:
-
-  <img src="data/resources/result_pdc_beam3D.gif" alt="Rollout Example" width="70%">
-
-
-- Box plot comparing the relative RMSE and RRMSE error for the 3D viscoelastic beam bending. The yellow box represents the performance of our method (Local TIGNN):
-
-
-   <img src="data/resources/results_beam3D.png" alt="Rollout Example" width="70%">
-
-
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/a-tierz/Local-ThermodynamicsGNN.git
-   cd Local-ThermodynamicsGNN
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Install and initialize Weights & Biases:
-   ```bash
-   pip install wandb
-   wandb init
-   ```
+- Prediction of the initial condition: The final digital twin works with a camera filming the real movement of water inside a glass. In order to start the rollout with the TIGNN we need the initial condition. We can get the initial positions of particles inside the fluid, but the TIGNN also relies on velocity data, which is imposible to get with a camera. Therefore, based on many SPH simulations, we predict the initial velocities with a second GNN.
+- Simulation of the fluid: Once we have the initial condition, the TIGNN does the rollout to simulate the temporal evolution in real time.
 
 
 ## Usage
 
-Run the training script for any of the examples, only the beam3D dataset is provided in the repository, if you need more send a email to atierz@unizar.es:
-```bash
-python main_train.py --dset_name dataset_Beam3D.json
+In order to run the training or the inference codes, we first need to gather the data and have the correct folcer structure. For storage purposes, we do not provide the data directly on the repository. Besides the content in the repo, you should create the following folders.
 ```
-
-Replace `data/jsonFiles/dataset_Beam3D.json` with the appropriate configuration file for your experiment.
-
-### Test pretrained nets
-```bash
-python main_inference.py --dset_name dataset_Beam3D.json --pretrain_weights modelTest_3DBeam.ckpt
+GNN_rollout/
+├── data_init/
+│   ├── dataset/
+│   ├── jsonFiles/
+│   └── weights/
+├── data_rollout/
+│   ├── dataset_1/
+│   ├── dataset_3/
+│   ├── dataset_5/
+│   ├── jsonFiles/
+│   └── weights/
+├── images/
+├── lightning_logs/
+├── outputs_init/
+├── outputs_rollout/
+└── wandb/
 ```
 
 
@@ -109,4 +75,4 @@ This repository is licensed under the GNU License. See `LICENSE` for details.
 
 ---
 
-For any questions or feedback, please contact **Alicia Tierz** at atierz@unizar.es
+For any questions or feedback, please contact me.
