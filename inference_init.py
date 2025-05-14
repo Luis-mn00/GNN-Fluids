@@ -38,15 +38,15 @@ gamma = model_params['gamma']
 weight_decay = model_params['weight_decay']
 
 # Load training, validation, and test datasets
-file_path = "data_init/dataset/Glass_train.pt"  # Path to training dataset
+file_path = "data_init/dataset_oil/Glass_train.pt"  # Path to training dataset
 dataset_train = load_pt_dataset(file_path)
 print(f"Dataset size: {len(dataset_train)}")
 
-file_path = "data_init/dataset/Glass_val.pt"  # Path to validation dataset
+file_path = "data_init/dataset_oil/Glass_val.pt"  # Path to validation dataset
 dataset_val = load_pt_dataset(file_path)
 print(f"Validation dataset size: {len(dataset_val)}")
 
-file_path = "data_init/dataset/Glass_test.pt"  # Path to test dataset
+file_path = "data_init/dataset_oil/Glass_test1.pt"  # Path to test dataset
 dataset_test = load_pt_dataset(file_path)
 print(f"Test dataset size: {len(dataset_test)}")
 
@@ -56,6 +56,9 @@ max_nodes = max(max(data.x.shape[0] for data in dataset_train),
                 max(data.x.shape[0] for data in dataset_test))
 
 mean_x, std_x, mean_y, std_y, mean_vel, std_vel = compute_mean_std(dataset_train)
+print(f"Mean x: {mean_x}, Std x: {std_x}")
+print(f"Mean y: {mean_y}, Std y: {std_y}")
+print(f"Mean vel: {mean_vel}, Std vel: {std_vel}")
 
 graphs_train = prepare_data(dataset_train, mean_x, std_x, mean_y, std_y, mean_vel, std_vel, max_nodes)
 graphs_val = prepare_data(dataset_val, mean_x, std_x, mean_y, std_y, mean_vel, std_vel, max_nodes)
@@ -71,7 +74,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Update model initialization
 model = NodalGNN(n_hidden=n_hidden, dim_hidden=dim_hidden, num_passes=passes, input_dim=4).to(device)
-model.load_state_dict(torch.load('data_init/weights/best_9247.pth', map_location=device))
+#model.load_state_dict(torch.load('data_init/weights/best_9247.pth', map_location=device))
+#model.load_state_dict(torch.load('data_init/weights/best_1607.pth', map_location=device))
+model.load_state_dict(torch.load('data_init/weights/best_3071.pth', map_location=device))
 
 # Create folder to save the plots
 output_folder = "outputs_init/plots"
