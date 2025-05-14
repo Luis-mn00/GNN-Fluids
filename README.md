@@ -51,22 +51,6 @@ GNN_rollout/
 ├── outputs_rollout/
 ```
 
-
-## Citation
-
-If you use this code or datasets in your research, please cite:
-
-```bibtex
-@misc{tierz2024graphneuralnetworksinformed,
-      title={Graph neural networks informed locally by thermodynamics}, 
-      author={Alicia Tierz and Iciar Alfaro and David González and Francisco Chinesta and Elías Cueto},
-      year={2024},
-      eprint={2405.13093},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2405.13093}, 
-}
-```
 ### License
 
 This repository is licensed under the GNU License. See `LICENSE` for details.
