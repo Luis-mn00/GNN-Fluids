@@ -21,7 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('--gpu', default=True, type=str2bool, help='GPU acceleration')
     parser.add_argument('--pretrain_weights', default=r'epoch=100-val_loss=7.09.ckpt', type=str, help='name')
 
-    # Dataset Parameters
+    # Dataset Parameter s
     parser.add_argument('--dset_dir', default='data_rollout', type=str, help='dataset directory')
     parser.add_argument('--dset_name', default=r'dataset_Water3D.json', type=str, help='dataset directory')
 
@@ -40,8 +40,8 @@ if __name__ == '__main__':
     dInfo = json.load(f)
 
     # Load datasets
-    train_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_5', dInfo['dataset']['datasetPaths']['train']))
-    test_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_5', dInfo['dataset']['datasetPaths']['test']))
+    train_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_6', dInfo['dataset']['datasetPaths']['train']))
+    test_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_6', dInfo['dataset']['datasetPaths']['test']))
     train_dataloader = DataLoader(train_set, batch_size=dInfo['model']['batch_size'])
     test_dataloader = DataLoader(test_set, batch_size=1)
 
