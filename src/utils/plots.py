@@ -481,6 +481,8 @@ def generate_pointclud(z_net, n, name=''):
     # Crear la ventana de visualización con dimensiones explícitas
     visualizer = o3d.visualization.Visualizer()
     visualizer.create_window()
+    render_option = visualizer.get_render_option()
+    render_option.point_size = 7.0
     view_control = visualizer.get_view_control()
     visualizer.add_geometry(pcd)
 
@@ -515,7 +517,19 @@ def generate_pointclud(z_net, n, name=''):
     # Cerrar la ventana al finalizar
     visualizer.destroy_window()
 
+def video_plot_gt(z_gt, save_dir, n=[]):
+    generate_pointclud(z_gt, n, name='gt')
 
+    image_lst = []
+    for i in range(z_gt.shape[0] - 1):
+        try:
+            frame_gt = cv2.cvtColor(cv2.imread(f'images/gt_frame_{i + 1}.png'), cv2.COLOR_BGR2RGB)
+
+            image_lst.append(frame_gt)
+        except:
+            print(f"Error processing frame {i + 1}")
+
+    imageio.mimsave(save_dir, image_lst, fps=10, loop=1)
 
 def video_plot_3D(z_net, z_net_init, z_gt, save_dir, n=[]):
     generate_pointclud(z_gt, n, name='gt')

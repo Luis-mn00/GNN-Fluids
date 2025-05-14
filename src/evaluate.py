@@ -6,7 +6,7 @@ import time
 import torch
 import numpy as np
 from src.utils.utils import print_error, generate_folder
-from src.utils.plots import plot_2D_image, plot_2D, plotError, plot_3D, video_plot_3D
+from src.utils.plots import plot_2D_image, plot_2D, plotError, plot_3D, video_plot_3D, video_plot_gt
 from src.utils.utils import compute_connectivity
 
 from src.gnn_init import NodalGNN
@@ -125,6 +125,7 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
                 cnt_conet += time.time() - start_time
             else:
                 edge_index = snap.edge_index
+
             if glass_flag:
                 z_net[t + 1] = z_denorm[snap.n == 1]
                 z_gt[t + 1] = z_t1[snap.n == 1]
@@ -140,7 +141,7 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
             snap.edge_index = edge_index_init
             snap = snap.to(device)
             with torch.no_grad():
-                z_denorm_init, _, _ = nodal_gnn.predict_step(snap, 1)
+                z_denorm_init, z_t1_init, _ = nodal_gnn.predict_step(snap, 1)
             if dtset_type == 'fluid':
                 pos = z_denorm_init[:, :3].clone()
                 edge_index_init = compute_connectivity(np.asarray(pos.cpu()), radius_connectivity, add_self_edges=False).to(
@@ -165,6 +166,7 @@ def generate_results(plasticity_gnn, start_gnn, test_dataloader, dInfo, device, 
     output_dir_exp = generate_folder(output_dir_exp, pahtDInfo, pathWeights)
     save_dir_gif = os.path.join(output_dir_exp, f'result.gif')
     save_dir_gif_pdc = os.path.join(output_dir_exp, f'result_pdc.gif')
+    save_dir_gif_gt = os.path.join(output_dir_exp, f'result_gt.gif')
 
     # Make roll out
     start_time = time.time()
@@ -186,6 +188,7 @@ def generate_results(plasticity_gnn, start_gnn, test_dataloader, dInfo, device, 
         plot_2D_image(z_net, z_gt, -1, 4, output_dir=output_dir_exp)
         plot_2D(z_net, z_gt, save_dir_gif, var=4)
     else:
+        video_plot_gt(z_gt, save_dir=save_dir_gif_gt)
         video_plot_3D(z_net, z_net_init, z_gt, save_dir=save_dir_gif_pdc)
         plot_3D(z_net, z_net_init, z_gt, save_dir=save_dir_gif, var=-1)
 
