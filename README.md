@@ -1,6 +1,6 @@
 <div align="center"> 
 
-# MSc Thesis: Physics Informed Artificial Intelligence for Free Surface Fluid Models
+# Physics Informed Artificial Intelligence for Free Surface Fluid Models
 
 *Luis Medrano Navarro, Master in Industrial Mathematics, I3A and UC3M*
 
@@ -16,7 +16,7 @@ This work has been inspired by:
 </div>
 
 ## Abstract
-This repository contains part of the code used in my MSc thesis at I3A about GNNs for free surface fluid simulations. The goal was to develop a digital twin of sloshing scenarios, where we want to simulate the movement of a fluid inside a container. To have real-time predictions we can not rely on classical numerical solvers, but we use a Deep Learning surrogate model. In particular, we trained a Thermodynamics Informed Graph Neural Network (TIGNN).
+This repository contains part of the code used at I3A (University of Zaragoza) about GNNs for free surface fluid simulations. The goal was to develop a digital twin of sloshing scenarios, where we want to simulate the movement of a fluid inside a container. To have real-time predictions we can not rely on classical numerical solvers, but we use a Deep Learning surrogate model. In particular, we trained a Thermodynamics Informed Graph Neural Network (TIGNN).
 
 
 ## Methodology
