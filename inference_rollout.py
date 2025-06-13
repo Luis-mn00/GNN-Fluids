@@ -19,7 +19,9 @@ if __name__ == '__main__':
 
     # Study Case
     parser.add_argument('--gpu', default=True, type=str2bool, help='GPU acceleration')
-    parser.add_argument('--pretrain_weights', default=r'epoch=100-val_loss=7.09.ckpt', type=str, help='name')
+    #parser.add_argument('--pretrain_weights', default=r'epoch=100-val_loss=7.09.ckpt', type=str, help='name')
+    #parser.add_argument('--pretrain_weights', default=r'epoch=58-val_loss=14.80.ckpt', type=str, help='name')
+    parser.add_argument('--pretrain_weights', default=r'epoch=173-val_loss=2.81.ckpt', type=str, help='name')
 
     # Dataset Parameter s
     parser.add_argument('--dset_dir', default='data_rollout', type=str, help='dataset directory')
@@ -40,8 +42,8 @@ if __name__ == '__main__':
     dInfo = json.load(f)
 
     # Load datasets
-    train_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_6', dInfo['dataset']['datasetPaths']['train']))
-    test_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_6', dInfo['dataset']['datasetPaths']['test']))
+    train_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_oil_new', dInfo['dataset']['datasetPaths']['train']))
+    test_set = GraphDataset(dInfo, os.path.join(args.dset_dir, 'dataset_oil_new', dInfo['dataset']['datasetPaths']['test']))
     train_dataloader = DataLoader(train_set, batch_size=dInfo['model']['batch_size'])
     test_dataloader = DataLoader(test_set, batch_size=1)
 
@@ -61,4 +63,8 @@ if __name__ == '__main__':
     trainer = pl.Trainer(accelerator="cpu",
                          profiler="simple")
 
-    generate_results(nodal_gnn, "data_init/weights/best_9247.pth", test_dataloader, dInfo, device, output_dir_exp, args.dset_name, args.pretrain_weights)
+    #generate_results(nodal_gnn, "data_init/weights/best_9247.pth", test_dataloader, dInfo, device, output_dir_exp, args.dset_name, args.pretrain_weights)
+    #generate_results(nodal_gnn, "data_init/weights/best_3071.pth", test_dataloader, dInfo, device, output_dir_exp, args.dset_name, args.pretrain_weights)
+    #generate_results(nodal_gnn, "data_init/weights/best_1629.pth", test_dataloader, dInfo, device, output_dir_exp, args.dset_name, args.pretrain_weights)
+    #generate_results(nodal_gnn, "data_init/weights/best_2356.pth", test_dataloader, dInfo, device, output_dir_exp, args.dset_name, args.pretrain_weights)
+    generate_results(nodal_gnn, "data_init/weights/best_890.pth", test_dataloader, dInfo, device, output_dir_exp, args.dset_name, args.pretrain_weights)

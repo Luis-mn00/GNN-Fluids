@@ -50,9 +50,6 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
     cnt_conet = 0  # Counter for connectivity computation time
     cnt_gnn = 0  # Counter for GNN computation time
 
-    # Cut the simulation to ignore the last 20 steps
-    data = data[:-20]
-
     # Initialize dimensions and tensors for predictions and ground truth
     dim_z = data[0].x.shape[1]
     N_nodes = data[0].x.shape[0]
@@ -80,12 +77,26 @@ def roll_out(nodal_gnn, start_gnn, dataloader, device, radius_connectivity, dtse
     start_gnn_model.eval()  # Set the model to evaluation mode
 
     # Modify the initial condition to maintain the first 3 components
-    mean_x = torch.tensor([0.0543, 0.0252, 0.0550])
-    std_x = torch.tensor([0.0294, 0.0240, 0.0293])
-    mean_y = torch.tensor([1.6498e-02, -1.2449e-02, -9.6641e-03, 5.4860e-06])
-    std_y = torch.tensor([2.3646e-01, 4.0701e-02, 1.8247e-01, 7.0457e-06])
-    mean_vel = torch.tensor([0.0197])
-    std_vel = torch.tensor([0.2772])
+    #mean_x = torch.tensor([0.0323, 0.0356, 0.0324])
+    #std_x = torch.tensor([0.0168, 0.0276, 0.0164])
+    #mean_y = torch.tensor([1.0529e-02, -1.5118e-02, -5.9235e-05,  6.2392e-07])
+    #std_y = torch.tensor([3.5452e-01, 6.6561e-02, 1.4897e-02, 7.0898e-07])
+    #mean_vel = torch.tensor([0.0126])
+    #std_vel = torch.tensor([0.4870])
+    
+    #mean_x = torch.tensor([0.0321, 0.0375, 0.0324])
+    #std_x = torch.tensor([0.0173, 0.0305, 0.0173])
+    #mean_y = torch.tensor([2.5395e-02, -5.7272e-03,  6.9757e-06,  3.0212e-06])
+    #std_y = torch.tensor([2.1110e-01, 3.9655e-02, 1.5679e-02, 3.7189e-06])
+    #mean_vel = torch.tensor([0.0167])
+    #std_vel = torch.tensor([0.3001])
+    
+    mean_x = torch.tensor([0.0320, 0.0371, 0.0320])
+    std_x = torch.tensor([0.0171, 0.0299, 0.0170])
+    mean_y = torch.tensor([-1.1407e-02, -1.3080e-02, -3.8941e-06,  2.2595e-06])
+    std_y = torch.tensor([3.6516e-01, 6.1543e-02, 1.7737e-02, 2.6511e-06])
+    mean_vel = torch.tensor([-0.0162])
+    std_vel = torch.tensor([0.5094])
     
     # Concatenate mean_x and std_x with mean_vel and std_vel
     mean_input = torch.cat((mean_x, mean_vel))

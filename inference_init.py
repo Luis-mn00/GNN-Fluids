@@ -38,16 +38,17 @@ gamma = model_params['gamma']
 weight_decay = model_params['weight_decay']
 
 # Load training, validation, and test datasets
-file_path = "data_init/dataset_oil/Glass_train.pt"  # Path to training dataset
+file_path = "data_init/dataset_oil_new/Glass_train.pt"  # Path to training dataset
 dataset_train = load_pt_dataset(file_path)
 print(f"Dataset size: {len(dataset_train)}")
 
-file_path = "data_init/dataset_oil/Glass_val.pt"  # Path to validation dataset
+file_path = "data_init/dataset_oil_new/Glass_val.pt"  # Path to validation dataset
 dataset_val = load_pt_dataset(file_path)
 print(f"Validation dataset size: {len(dataset_val)}")
 
-file_path = "data_init/dataset_oil/Glass_test1.pt"  # Path to test dataset
+file_path = "data_init/dataset_oil_new/Glass_test1.pt"  # Path to test dataset
 dataset_test = load_pt_dataset(file_path)
+#print(dataset_test)
 print(f"Test dataset size: {len(dataset_test)}")
 
 # Find max number of nodes for padding
@@ -76,7 +77,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = NodalGNN(n_hidden=n_hidden, dim_hidden=dim_hidden, num_passes=passes, input_dim=4).to(device)
 #model.load_state_dict(torch.load('data_init/weights/best_9247.pth', map_location=device))
 #model.load_state_dict(torch.load('data_init/weights/best_1607.pth', map_location=device))
-model.load_state_dict(torch.load('data_init/weights/best_3071.pth', map_location=device))
+#model.load_state_dict(torch.load('data_init/weights/best_3071.pth', map_location=device))
+#model.load_state_dict(torch.load('data_init/weights/best_1629.pth', map_location=device))
+#model.load_state_dict(torch.load('data_init/weights/best_2356.pth', map_location=device))
+model.load_state_dict(torch.load('data_init/weights/best_890.pth', map_location=device))
 
 # Create folder to save the plots
 output_folder = "outputs_init/plots"
